@@ -8,12 +8,10 @@ import click
 import sys
 
 from lib.exceptions import MyAnyError
-from sqlalchemy import func, Integer
 
 from portal_notarias.app import create_app
 from portal_notarias.blueprints.edictos.tasks import enviar_email_acuse_recibido as enviar_email_acuse_recibido_task
 from portal_notarias.blueprints.edictos.tasks import enviar_email_republicacion as enviar_email_republicacion_task
-from portal_notarias.blueprints.edictos.tasks import republicacion_edictos as republicacion_edictos_task
 from portal_notarias.blueprints.edictos.models import Edicto
 from portal_notarias.blueprints.edictos_acuses.models import EdictoAcuse
 from portal_notarias.extensions import database

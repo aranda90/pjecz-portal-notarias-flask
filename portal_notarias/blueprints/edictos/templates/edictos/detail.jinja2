@@ -22,11 +22,9 @@
         {% if current_user.can_insert('EDICTOS') and current_user.autoridad_id == edicto.autoridad_id %}
             {{ topbar.button_upload('Subir', url_for('edictos.new')) }}
         {% endif %}
+        {# Los usuarios con permiso para editar pueden editar, eliminar y recuperar siempre y cuando sea el usuario que lo creo #}
         {% if current_user.can_admin('EDICTOS') or (current_user.can_edit('EDICTOS') and edicto.autoridad_id == current_user.autoridad_id) %}
             {{ topbar.button_edit('Editar', url_for('edictos.edit', edicto_id=edicto.id)) }}
-        {% endif %}
-        {# Los usuarios con permiso para insertar pueden eliminar y recuperar #}
-        {% if current_user.can_insert('EDICTOS') %}
             {% if edicto.estatus == 'A' %}{{ topbar.button_delete('Eliminar', url_for('edictos.delete', edicto_id=edicto.id)) }}{% endif %}
             {% if edicto.estatus == 'B' %}{{ topbar.button_recover('Recuperar', url_for('edictos.recover', edicto_id=edicto.id)) }}{% endif %}
         {% endif %}
