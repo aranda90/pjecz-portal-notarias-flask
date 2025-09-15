@@ -228,6 +228,16 @@ def list_inactive():
     )
 
 
+# Muestra la API Key de un usuario, agregado recientemente
+@usuarios.route("/usuarios/<int:usuario_id>/api_key")
+@login_required
+@permission_required(MODULO, Permiso.ADMINISTRAR)
+def view_api_key(usuario_id):
+    """Muestra la API Key de un usuario."""
+    usuario = Usuario.query.get_or_404(usuario_id)
+    return render_template("usuarios/view_api_key.jinja2", usuario=usuario)
+
+
 @usuarios.route("/usuarios/<int:usuario_id>")
 @login_required
 @permission_required(MODULO, Permiso.VER)

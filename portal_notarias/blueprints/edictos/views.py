@@ -57,6 +57,8 @@ def checkout(id_hashed):
     """Acuse del Edicto"""
     edicto = Edicto.query.get_or_404(Edicto.decode_id(id_hashed))
     dia, mes, anio = dia_mes_ano(edicto.creado)
+    # Primera publicación siempre es número 1
+    numero_publicacion = 1
     return render_template(
         "edictos/print.jinja2",
         edicto=edicto,
@@ -64,6 +66,7 @@ def checkout(id_hashed):
         mes=mes.upper(),
         anio=anio,
         fecha_del_acuse=None,
+        numero_publicacion=numero_publicacion,
     )
 
 
@@ -72,8 +75,22 @@ def checkout_notaria(id_hashed, edicto_acuse_id):
     """Acuse de las republicaciones del Edicto para notarias"""
     edicto = Edicto.query.get_or_404(Edicto.decode_id(id_hashed))
     edicto_acuse = EdictoAcuse.query.get_or_404(edicto_acuse_id)
-    dia, mes, anio = dia_mes_ano(edicto.creado)
+    
+    # Para republicaciones, usar la fecha del acuse, no la fecha de creación del edicto
+    dia, mes, anio = dia_mes_ano(edicto_acuse.fecha)
     fecha_del_acuse = edicto_acuse.fecha
+    
+    # Calcular el número de publicación basado en la posición del acuse
+    # Obtener todos los acuses del edicto ordenados por fecha
+    acuses = EdictoAcuse.query.filter_by(edicto_id=edicto.id, estatus="A").order_by(EdictoAcuse.fecha).all()
+    
+    # Encontrar la posición del acuse actual y sumar 2 (1 para la publicación original + 1 para base 1)
+    numero_publicacion = 1  # Por defecto
+    for i, acuse in enumerate(acuses):
+        if acuse.id == int(edicto_acuse_id):
+            numero_publicacion = i + 2  # +2 porque la primera publicación es 1, y los acuses empiezan en 2
+            break
+    
     return render_template(
         "edictos/print.jinja2",
         edicto=edicto,
@@ -81,6 +98,7 @@ def checkout_notaria(id_hashed, edicto_acuse_id):
         mes=mes.upper(),
         anio=anio,
         fecha_del_acuse=fecha_del_acuse,
+        numero_publicacion=numero_publicacion,
     )
 
 

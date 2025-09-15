@@ -47,7 +47,9 @@ def republicar(fecha, probar):
     # Consultar edictos_acuses, filtrados por la fecha
     edictos_acuses = EdictoAcuse.query.filter(EdictoAcuse.fecha == fecha_dt).filter(EdictoAcuse.estatus == "A").all()
 
-    # Inicializar listado de mensajes
+    # Inicializar contadores y listado de mensajes
+    contador_omitidos = 0
+    contador_republicados = 0
     mensajes = []
 
     # Bucle por edictos_acuses
@@ -56,6 +58,12 @@ def republicar(fecha, probar):
 
         # El Edicto original es el que se subio
         edicto_original = edicto_acuse.edicto
+
+        # Validar que el edicto original esté activo
+        if edicto_original.estatus != "A":
+            click.echo("X", nl=False)  # Marcar como omitido
+            contador_omitidos += 1
+            continue
 
         # Si en edicto_original, edicto_id_original es CERO, se va actualizar con su mismo id
         if edicto_original.edicto_id_original == 0:
@@ -73,6 +81,7 @@ def republicar(fecha, probar):
 
         # Si existe el Edicto, con ese id original y fecha, se omite
         if edicto_ya_republicado:
+            contador_omitidos += 1
             continue
 
         # Determinar la cantidad de Edictos que tienen edicto_id_original
@@ -99,13 +108,19 @@ def republicar(fecha, probar):
 
         # Poner un + en pantalla
         click.echo("+", nl=False)
+        contador_republicados += 1
 
         # Agregar el mensaje
         mensajes.append(f"{edicto.autoridad.clave} {edicto.fecha} {edicto.descripcion}")
 
     # Mostrar mensaje final
     click.echo()
-    click.echo("\n".join(mensajes))
+    click.echo(f"Total de edictos republicados: {contador_republicados}")
+    click.echo(f"Total de edictos omitidos: {contador_omitidos}")
+    if contador_republicados == 0:
+        click.echo("No hubo edictos republicados")
+    else:
+        click.echo("\n".join(mensajes))
 
 
 @click.command()

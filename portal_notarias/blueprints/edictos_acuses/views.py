@@ -12,6 +12,7 @@ from lib.datatables import get_datatable_parameters, output_datatable_json
 from portal_notarias.blueprints.permisos.models import Permiso
 from portal_notarias.blueprints.usuarios.decorators import permission_required
 from portal_notarias.blueprints.edictos_acuses.models import EdictoAcuse
+from portal_notarias.extensions import moment
 
 MODULO = "EDICTOS ACUSES"
 
@@ -57,6 +58,7 @@ def datatable_json():
                     "fecha": resultado.fecha.strftime("%Y-%m-%d"),
                     "url": url_for("edictos_acuses.detail", edicto_acuse_id=resultado.id),
                 },
+                "id": resultado.id,
                 "edicto_descripcion": resultado.edicto.descripcion,
                 "acuse_recepcion": url_resultado,
             }
@@ -92,4 +94,4 @@ def list_inactive():
 def detail(edicto_acuse_id):
     """Detalle de un Edicto Acuse"""
     edicto_acuse = EdictoAcuse.query.get_or_404(edicto_acuse_id)
-    return render_template("edictos_acuses/detail.jinja2", edicto_acuse=edicto_acuse)
+    return render_template("edictos_acuses/detail.jinja2", edicto_acuse=edicto_acuse, now=datetime.now(), moment=moment)

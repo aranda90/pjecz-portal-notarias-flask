@@ -7,7 +7,7 @@
 {% block title %}Portal de Notarías {% endblock %}
 
 {% block topbar_actions %}
-    {{ topbar.page('Bienvenido ' + current_user.nombre) }}
+    {{ topbar.page('Bienvenido ' + current_user.nombre +  ' con email ' + current_user.email) }}
 {% endblock %}
 
 {% block content %}

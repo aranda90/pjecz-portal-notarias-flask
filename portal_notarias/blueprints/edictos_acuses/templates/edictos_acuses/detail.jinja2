@@ -31,6 +31,7 @@
         {% else %}
             {{ detail.label_value('Descripción', edicto_acuse.edicto.descripcion) }}
         {% endif %}
+        {{ detail.label_value('Fecha de publicación', edicto_acuse.fecha.strftime('%d %b %Y')) }}
         {# Obtener la fecha actual #}
         {% if edicto_acuse.fecha <= now.date() %}
             {{ detail.label_value_new_tab('Acuse', 'De clic aqui', url_for('edictos.checkout_notaria', id_hashed=edicto_acuse.edicto.encode_id(), edicto_acuse_id=edicto_acuse.id))}}
@@ -47,7 +48,7 @@
                 </div>
             </div>
         {% endif %}
-        {{ detail.label_value('Creado', moment(edicto_acuse.creado, local=True).format('DD MMM YYYY')) }}
+        {{ detail.label_value('Creado', edicto_acuse.creado.strftime('%d %b %Y')) }}
     {% endcall %}
 {% endblock %}
 
@@ -56,5 +57,4 @@
         {% if edicto_acuse.estatus == 'A' %}{{ modals.custom_javascript_delete('Eliminar', '¿Eliminar a ' + edicto_acuse.fecha | string + '?') }}{% endif %}
         {% if edicto_acuse.estatus == 'B' %}{{ modals.custom_javascript_recover('Recuperar', '¿Recuperar a ' + edicto_acuse.fecha | string + '?') }}{% endif %}
     {% endif %}
-    {{ detail.moment_js(moment) }}
 {% endblock %}

@@ -32,6 +32,7 @@
         <table id="edictos_acuses_datatable" class="table {% if estatus == 'B'%}table-dark{% endif %} display nowrap" style="width:100%">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Fecha de publicación</th>
                     <th>Descripción del edicto</th>
                     <th>Acuse de recepción</th>
@@ -47,20 +48,28 @@
         configDataTable['ajax']['url'] = '/edictos_acuses/datatable_json';
         configDataTable['ajax']['data'] = {{ filtros }};
         configDataTable['columns'] = [
+            { data: 'id' },
             { data: 'detalle' },
             { data: 'edicto_descripcion' },
             { data: 'acuse_recepcion' },
         ];
         configDataTable['columnDefs'] = [
             {
-                targets: 0, // detalle
+                targets: 0, // id
                 data: null,
                 render: function(data, type, row, meta) {
-                    return data.fecha;
+                    return row.id; // Más directo
                 }
             },
             {
-                targets: 1, // descripcion
+                targets: 1, // detalle
+                data: null,
+                render: function(data, type, row, meta) {
+                    return '<a href="' + row.detalle.url + '">' + row.detalle.fecha + '</a>';
+                }
+            },
+            {
+                targets: 2, // descripcion
                 data: null,
                 render: function(data, type, row, meta) {
                     if(data.length > 32)
@@ -69,7 +78,7 @@
                 }
             },
             {
-                targets: 2, // acuse_recepcion
+                targets: 3, // acuse_recepcion
                 data: null,
                 render: function(data, type, row, meta) {
                     if(data === "No disponible"){
